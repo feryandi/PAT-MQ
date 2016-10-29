@@ -50,6 +50,7 @@ public class Service {
     }
     
     private String register(String name, String uid, String password) throws SQLException {
+        // TO-DO: Check unique userid!
         String sql = "INSERT INTO user (name, userid, password) " +
                      "VALUES ('" + name + "', '" + uid + "', '" + password + "');"; 
         Statement stmt = db.connection.createStatement();
@@ -83,5 +84,17 @@ public class Service {
         }
         
         return obj.toJSONString();
+    }
+
+    private String addFriend(String userid) {
+        return null;
+    }
+    
+    private String addGroup(String group) {
+        return null;
+    }
+    
+    private String sendMessage(String recipient) {
+        return null;
     }
 }
