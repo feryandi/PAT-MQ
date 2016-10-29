@@ -76,9 +76,19 @@ public class Server {
                     String message = new String(delivery.getBody(),"UTF-8");
                     JSONParser parser = new JSONParser();        
                     JSONObject p = (JSONObject) parser.parse(message);    
-                    JSONObject params = (JSONObject) p.get("params");                    
+                    JSONObject params = (JSONObject) p.get("params");  
+                    String method = (String) p.get("method");
                     
-                    response = s.execute((String) p.get("method"), params.toJSONString());                    
+                    if (method.equals("message")) {  
+                        String msg = (String) params.get("message");
+                        channel.basicPublish(SERVER_EXCHANGE_NAME, 
+                                (String) params.get("key"), 
+                                null,
+                                msg.getBytes());
+                        response = "Message Sent";
+                    } else {
+                        response = s.execute(method, params.toJSONString());       
+                    }             
                 } catch (Exception e){
                     System.out.println(" [.] Exception: " + e.toString());
                     e.printStackTrace();

@@ -86,15 +86,20 @@ public class Service {
         return obj.toJSONString();
     }
 
-    private String addFriend(String userid) {
-        return null;
+    private String addFriend(String adderid, String userid) throws SQLException {
+        // TO-DO: Check unique userid!
+        String sql = "INSERT INTO friend (uaid, ubid) " +
+                     "VALUES ('" + adderid + "', '" + userid + "');"; 
+        Statement stmt = db.connection.createStatement();
+        stmt.executeUpdate(sql);
+        
+	JSONObject obj = new JSONObject();
+	obj.put("status", "success");
+        
+        return obj.toJSONString();
     }
     
     private String addGroup(String group) {
-        return null;
-    }
-    
-    private String sendMessage(String recipient) {
         return null;
     }
 }

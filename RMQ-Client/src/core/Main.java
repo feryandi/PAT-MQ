@@ -23,12 +23,16 @@ public class Main {
             
             String register = "{\"method\":\"register\", \"params\":{\"name\":\"fery\", \"userid\":\"fery\", \"password\":\"fery\"}}";
             String login = "{\"method\":\"login\", \"params\":{\"userid\":\"null\", \"password\":\"null\"}}";
+            String message = "{\"method\":\"message\", \"params\":{\"key\":\"null\", \"message\":\"Hei World\"}}";
             
             response = c.call(login);
             JSONParser parser = new JSONParser();        
             JSONObject r = (JSONObject) parser.parse(response);    
             
             c.bind((String) r.get("userid"));
+            response = c.call(message);
+            
+            System.out.println(response);
             
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
