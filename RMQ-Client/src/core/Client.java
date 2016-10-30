@@ -23,12 +23,15 @@ import java.util.logging.Logger;
  * @author feryandi
  */
 public class Client {
+    public static Client client = new Client();
+    
     private Connection connection;
     private Channel channel;
     private QueueingConsumer consumer;
     
     /* Client Queue */
-    private String CLIENT_QUEUE;
+    private String CLIENT_RPC_QUEUE;
+    private String CLIENT_MSG_QUEUE;
     
     /* Server Queue */
     private static final String SERVER_HOST = "localhost";
@@ -45,7 +48,8 @@ public class Client {
             channel = connection.createChannel();
             
             channel.exchangeDeclare(SERVER_EXCHANGE_NAME, "direct");
-            CLIENT_QUEUE = channel.queueDeclare().getQueue();
+            CLIENT_RPC_QUEUE = channel.queueDeclare().getQueue();
+            CLIENT_MSG_QUEUE = channel.queueDeclare().getQueue();
             consumer = new QueueingConsumer(channel);
             
             Consumer econsumer = new DefaultConsumer(channel) {
@@ -57,12 +61,16 @@ public class Client {
                 }
             };
             
-            channel.basicConsume(CLIENT_QUEUE, true, consumer);
-            channel.basicConsume(CLIENT_QUEUE, true, econsumer);
+            channel.basicConsume(CLIENT_RPC_QUEUE, true, consumer);
+            channel.basicConsume(CLIENT_MSG_QUEUE, true, econsumer);
             
         } catch (Exception ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static Client getInstance() {
+        return client;
     }
     
     public String call(String message) throws Exception {
@@ -72,7 +80,7 @@ public class Client {
         AMQP.BasicProperties props = new AMQP.BasicProperties
                                     .Builder()
                                     .correlationId(corrId)
-                                    .replyTo(CLIENT_QUEUE)
+                                    .replyTo(CLIENT_RPC_QUEUE)
                                     .build();
 
         channel.basicPublish("", SERVER_QUEUE_NAME, props, message.getBytes("UTF-8"));
@@ -90,7 +98,7 @@ public class Client {
 
     public void bind(String key) {
         try {        
-            channel.queueBind(CLIENT_QUEUE, SERVER_EXCHANGE_NAME, key);
+            channel.queueBind(CLIENT_MSG_QUEUE, SERVER_EXCHANGE_NAME, key);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
