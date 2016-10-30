@@ -5,11 +5,10 @@
  */
 package core;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,6 +41,10 @@ public class Service {
                          (String) p.get("password"));
                 System.out.println("[x] Login");
                 break;
+            case "add_friend":
+                ret = addFriend((String) p.get("userid"),
+                            (String) p.get("friendid"));
+                System.out.println("[x] Add Friend");
             default:
                 throw new IllegalArgumentException("Invalid method: " + method);
         }
@@ -75,7 +78,7 @@ public class Service {
         }
         
         rs.close();
-        stmt.close();                
+        stmt.close();
         
         if (success) {            
             obj.put("status", "success");
@@ -99,7 +102,58 @@ public class Service {
         return obj.toJSONString();
     }
     
-    private String addGroup(String group) {
-        return null;
+    private String addGroupMember(String userid, String group) throws SQLException, ParseException {
+        Statement stmt = db.connection.createStatement();        
+	JSONObject obj = new JSONObject();     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM `chat_group` WHERE uid='" + userid + ";");
+        
+        if ( !rs.next() ) {
+            JSONArray groups = new JSONArray();
+            groups.add(group);
+            
+            String sql = "INSERT INTO `chat_group` (uid, groups) " +
+                         "VALUES ('" + userid + "', '" + groups.toJSONString() + "');"; 
+            stmt = db.connection.createStatement();
+            stmt.executeUpdate(sql);
+        } else {
+            JSONParser parser = new JSONParser();        
+            JSONArray p = (JSONArray) parser.parse(rs.getString("groups"));
+            p.add(group);
+            
+            String sql = "UPDATE `chat_group` " +
+                         "SET groups='" + p.toJSONString() + "' " +
+                         "WHERE userid='" + userid + "');"; 
+            stmt = db.connection.createStatement();
+            stmt.executeUpdate(sql);
+        }
+        
+        rs.close();
+        stmt.close();
+        
+	obj.put("status", "success");
+        return obj.toJSONString();
+    }
+    
+    private String delGroupMember(String userid, String group) throws SQLException, ParseException {
+        Statement stmt = db.connection.createStatement();        
+	JSONObject obj = new JSONObject();     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM `chat_group` WHERE uid='" + userid + ";");
+        
+        JSONParser parser = new JSONParser();        
+        JSONArray p = (JSONArray) parser.parse(rs.getString("groups"));
+        p.remove(group);
+
+        String sql = "UPDATE `chat_group` " +
+                     "SET groups='" + p.toJSONString() + "' " +
+                     "WHERE userid='" + userid + "');"; 
+        stmt = db.connection.createStatement();
+        stmt.executeUpdate(sql);
+        
+        stmt.close();
+        
+	obj.put("status", "success");
+        return obj.toJSONString();
     }
 }

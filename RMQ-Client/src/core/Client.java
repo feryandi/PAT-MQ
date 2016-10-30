@@ -35,6 +35,8 @@ public class Client {
     private String SERVER_QUEUE_NAME = "server_queue";
     private static final String SERVER_EXCHANGE_NAME = "server_exchange";
     
+    /* Message Memory */
+    
     public Client() {        
         try {
             ConnectionFactory factory = new ConnectionFactory();
