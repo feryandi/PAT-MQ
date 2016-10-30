@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import ui.Login;
 
 /**
  *
@@ -17,7 +18,7 @@ import org.json.simple.parser.JSONParser;
 public class Main {    
     
     public static void main(String[] argv) {
-        String response;
+        /*String response;
         try {
             Client c = new Client();
             
@@ -36,7 +37,14 @@ public class Main {
             
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Login().setVisible(true);
+            }
+        });
     }
     
 }
