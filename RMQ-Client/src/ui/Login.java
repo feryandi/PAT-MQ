@@ -127,7 +127,9 @@ public class Login extends javax.swing.JFrame {
             JSONObject r = (JSONObject) parser.parse(response);
             String status = (String) r.get("status");
             if (status.equals("success")) {
-                setVisible(false);                
+                setVisible(false);
+                c.id = ((Long) r.get("id")).intValue();
+                c.userid = (String) r.get("userid");
                 
                 Control ctl = new Control();
                 ctl.setVisible(true);        

@@ -40,6 +40,10 @@ public class Client {
     
     /* Message Memory */
     
+    /* Identity */
+    public int id = -1;
+    public String userid = null;
+    
     public Client() {        
         try {
             ConnectionFactory factory = new ConnectionFactory();

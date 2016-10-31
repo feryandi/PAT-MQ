@@ -5,16 +5,25 @@
  */
 package ui;
 
+import core.Client;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 /**
  *
  * @author feryandi
  */
 public class AddFriend extends javax.swing.JFrame {
 
+    Client c;
+    
     /**
      * Creates new form AddFriend
      */
     public AddFriend() {
+        c = Client.getInstance();
         initComponents();
     }
 
@@ -36,6 +45,11 @@ public class AddFriend extends javax.swing.JFrame {
         lbl_userid.setText("USERID");
 
         btn_addfriend.setText("ADD FRIEND");
+        btn_addfriend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_addfriendActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -66,6 +80,34 @@ public class AddFriend extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btn_addfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addfriendActionPerformed
+        try {
+            JSONObject o = new JSONObject();
+            o.put("method", "login");
+            
+            JSONObject p = new JSONObject();
+            p.put("userid", c.userid);
+            p.put("friendid", txt_userid.getText());
+            
+            o.put("params", p);
+                        
+            String response = c.call(o.toJSONString());          
+            
+            /* Check Response */
+            JSONParser parser = new JSONParser();        
+            JSONObject r = (JSONObject) parser.parse(response);
+            String status = (String) r.get("status");
+            if (status.equals("success")) {
+                setVisible(false);                
+                
+                Control ctl = new Control();
+                ctl.setVisible(true);        
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_addfriendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_addfriend;
