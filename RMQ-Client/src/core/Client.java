@@ -14,9 +14,15 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.QueueingConsumer;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import ui.Chat;
 
 /**
  *
@@ -39,6 +45,8 @@ public class Client {
     private static final String SERVER_EXCHANGE_NAME = "server_exchange";
     
     /* Message Memory */
+    public HashMap<String,ArrayList<String>> message_memory = new HashMap();
+    public HashMap<String, Chat> active_chat = new HashMap();
     
     /* Identity */
     public int id = -1;
@@ -60,8 +68,34 @@ public class Client {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope,
                                            AMQP.BasicProperties properties, byte[] body) throws IOException {
-                    String message = new String(body, "UTF-8");
-                    System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
+                    try {
+                        String message = new String(body, "UTF-8");
+                        System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
+                        
+                        JSONParser parser = new JSONParser();
+                        JSONObject r = (JSONObject) parser.parse(message);
+                        String from = (String) r.get("from");
+                        
+                        ArrayList<String> m;
+                        
+                        if (message_memory.containsKey(from)) {
+                            m = message_memory.get(from);
+                            m.add(message);
+                            message_memory.replace(from, m);                            
+                        } else {
+                            m = new ArrayList<>();
+                            m.add(message);
+                            message_memory.put(from, m);
+                        }
+                        
+                        if (active_chat.containsKey(from)) {
+                            Chat ch = active_chat.get(from);
+                            ch.refreshChat();
+                        }
+                        
+                    } catch (ParseException ex) {
+                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             };
             

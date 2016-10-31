@@ -38,8 +38,17 @@ public class Control extends javax.swing.JFrame {
                 if (evt.getClickCount() == 2) {
                     int index = list.locationToIndex(evt.getPoint());
                     Object userid = list.getModel().getElementAt(index);
-                    Chat c = new Chat(userid.toString());
-                    c.setVisible(true);
+                    final String userids = userid.toString();
+                    
+                    Chat ch = new Chat(userids, 0);
+                    ch.setVisible(true);
+                    
+                    ch.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            c.active_chat.remove(userids);
+                        }
+                    });
                 }
             }
         });

@@ -130,6 +130,7 @@ public class Login extends javax.swing.JFrame {
                 setVisible(false);
                 c.id = ((Long) r.get("id")).intValue();
                 c.userid = (String) r.get("userid");
+                c.bind((String) r.get("userid"));
                 
                 Control ctl = new Control();
                 ctl.setVisible(true);        

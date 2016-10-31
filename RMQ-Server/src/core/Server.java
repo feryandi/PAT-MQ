@@ -85,7 +85,7 @@ public class Server {
                                 (String) params.get("key"), 
                                 null,
                                 msg.getBytes());
-                        response = "Message Sent";
+                        response = "{\"status\":\"success\"}";
                     } else {
                         response = s.execute(method, params.toJSONString());       
                     }             
