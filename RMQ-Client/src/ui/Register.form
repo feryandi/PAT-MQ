@@ -8,6 +8,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -36,7 +39,7 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="txt_name" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txt_userid" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txt_user" alignment="0" max="32767" attributes="0"/>
                           <Component id="txt_pass" pref="122" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -56,7 +59,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txt_userid" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txt_user" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -88,7 +91,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txt_name">
     </Component>
-    <Component class="javax.swing.JTextField" name="txt_userid">
+    <Component class="javax.swing.JTextField" name="txt_user">
     </Component>
     <Component class="javax.swing.JPasswordField" name="txt_pass">
     </Component>
@@ -96,6 +99,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="REGISTER"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_registerActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

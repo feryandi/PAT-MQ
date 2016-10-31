@@ -5,17 +5,29 @@
  */
 package ui;
 
+import core.Client;
+import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 /**
  *
  * @author feryandi
  */
 public class Register extends javax.swing.JFrame {
-
+    
+    Client c;
+    
     /**
      * Creates new form Register
      */
     public Register() {
+        c = Client.getInstance();
         initComponents();
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     /**
@@ -31,11 +43,16 @@ public class Register extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txt_name = new javax.swing.JTextField();
-        txt_userid = new javax.swing.JTextField();
+        txt_user = new javax.swing.JTextField();
         txt_pass = new javax.swing.JPasswordField();
         btn_register = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setText("NAME");
 
@@ -44,6 +61,11 @@ public class Register extends javax.swing.JFrame {
         jLabel3.setText("PASSWORD");
 
         btn_register.setText("REGISTER");
+        btn_register.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_registerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -61,7 +83,7 @@ public class Register extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txt_name)
-                            .addComponent(txt_userid)
+                            .addComponent(txt_user)
                             .addComponent(txt_pass, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))))
                 .addContainerGap(93, Short.MAX_VALUE))
         );
@@ -75,7 +97,7 @@ public class Register extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txt_userid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -88,40 +110,37 @@ public class Register extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btn_registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registerActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+            JSONObject o = new JSONObject();
+            o.put("method", "register");
+            
+            JSONObject p = new JSONObject();
+            p.put("name", txt_name.getText());
+            p.put("userid", txt_user.getText());
+            p.put("password", String.valueOf(txt_pass.getPassword()));
+            
+            o.put("params", p);
+                        
+            String response = c.call(o.toJSONString());            
+            
+            /* Check Response */
+            JSONParser parser = new JSONParser();        
+            JSONObject r = (JSONObject) parser.parse(response);
+            String status = (String) r.get("status");
+            if (status.equals("success")) {
+                this.setVisible(false);                
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_btn_registerActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Register().setVisible(true);
-            }
-        });
-    }
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+
+    }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_register;
@@ -130,6 +149,6 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField txt_name;
     private javax.swing.JPasswordField txt_pass;
-    private javax.swing.JTextField txt_userid;
+    private javax.swing.JTextField txt_user;
     // End of variables declaration//GEN-END:variables
 }
