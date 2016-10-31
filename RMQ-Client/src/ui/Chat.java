@@ -6,6 +6,7 @@
 package ui;
 
 import core.Client;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -76,6 +77,11 @@ public class Chat extends javax.swing.JFrame {
         });
 
         btn_list.setText("MEMBER LIST");
+        btn_list.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_listActionPerformed(evt);
+            }
+        });
 
         lbl_chatwith.setText("Chat with Someone");
 
@@ -153,6 +159,11 @@ public class Chat extends javax.swing.JFrame {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_sendActionPerformed
+
+    private void btn_listActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_listActionPerformed
+        MemberGroup r = new MemberGroup();
+        r.setVisible(true);
+    }//GEN-LAST:event_btn_listActionPerformed
 
     public void refreshChat() throws ParseException {
         String[] raw_msg = messages.toArray(new String[0]);

@@ -51,6 +51,28 @@ public class Control extends javax.swing.JFrame {
                     });
                 }
             }
+        });        
+        
+        list_group.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList)evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    Object userid = list.getModel().getElementAt(index);
+                    final String userids = userid.toString();
+                    
+                    Chat ch = new Chat(userids, 1);
+                    ch.setVisible(true);
+                    
+                    ch.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            c.active_chat.remove(userids);
+                        }
+                    });
+                }
+            }
         });
     }
 
@@ -70,9 +92,7 @@ public class Control extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         list_friend = new javax.swing.JList<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jList3 = new javax.swing.JList<>();
+        list_group = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,23 +119,14 @@ public class Control extends javax.swing.JFrame {
 
         tab.addTab("Friends", jScrollPane2);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        list_group.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(list_group);
 
         tab.addTab("Groups", jScrollPane1);
-
-        jList3.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane3.setViewportView(jList3);
-
-        tab.addTab("Active Chats", jScrollPane3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,7 +139,7 @@ public class Control extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_creategroup, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_addfriend, javax.swing.GroupLayout.PREFERRED_SIZE, 105, Short.MAX_VALUE)))
+                        .addComponent(btn_addfriend, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -210,13 +221,11 @@ public class Control extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_addfriend;
     private javax.swing.JButton btn_creategroup;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JList<String> list_friend;
+    private javax.swing.JList<String> list_group;
     private javax.swing.JTabbedPane tab;
     // End of variables declaration//GEN-END:variables
 }
