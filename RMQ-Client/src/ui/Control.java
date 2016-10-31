@@ -35,7 +35,7 @@ public class Control extends javax.swing.JFrame {
         btn_addfriend = new javax.swing.JButton();
         tab = new javax.swing.JTabbedPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        list_friend = new javax.swing.JList<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -57,12 +57,12 @@ public class Control extends javax.swing.JFrame {
             }
         });
 
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
+        list_friend.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane2.setViewportView(list_friend);
 
         tab.addTab("Friends", jScrollPane2);
 
@@ -145,12 +145,12 @@ public class Control extends javax.swing.JFrame {
     private javax.swing.JButton btn_addfriend;
     private javax.swing.JButton btn_creategroup;
     private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
     private javax.swing.JList<String> jList3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JList<String> list_friend;
     private javax.swing.JTabbedPane tab;
     // End of variables declaration//GEN-END:variables
 }

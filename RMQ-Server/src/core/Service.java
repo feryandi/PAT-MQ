@@ -46,9 +46,9 @@ public class Service {
                             (String) p.get("friendid"));
                 System.out.println("[x] Add Friend: " + ret);
                 break;
-            case "get_friends":
+            case "get_friend":
                 ret = getFriend((String) p.get("userid"));
-                System.out.println("[x] Get Friends");
+                System.out.println("[x] Get Friend");
                 break;
             case "create_group":
                 break;
@@ -126,16 +126,26 @@ public class Service {
     }
 
     private String getFriend(String userid) throws SQLException {
+        boolean success = false;
         JSONObject obj = new JSONObject();
         Statement stmt = db.connection.createStatement();        
         ResultSet rs = stmt.executeQuery("SELECT * FROM `friend` WHERE uaid='" + userid + "' OR ubid='" + userid + "';");
         
-        if ( !rs.next() ) {
-            /*String sql = "INSERT INTO friend (uaid, ubid) " +
-                         "VALUES ('" + adderid + "', '" + userid + "');"; 
-            stmt = db.connection.createStatement();
-            stmt.executeUpdate(sql);*/
-
+        JSONArray list = new JSONArray();
+        if ( !!rs.next() ) {            
+            success = true;
+            String uaid = (String) rs.getString("uaid");
+            String ubid = (String) rs.getString("ubid");
+            
+            if (uaid.equals(userid)) {
+                list.add(ubid);
+            } else {
+                list.add(uaid);
+            }
+        } 
+        
+        if (success)  {
+            obj.put("data", list);            
             obj.put("status", "success");   
         } else {
             obj.put("status", "failed");               
