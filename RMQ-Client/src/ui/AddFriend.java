@@ -8,6 +8,7 @@ package ui;
 import core.Client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -83,7 +84,7 @@ public class AddFriend extends javax.swing.JFrame {
     private void btn_addfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addfriendActionPerformed
         try {
             JSONObject o = new JSONObject();
-            o.put("method", "login");
+            o.put("method", "add_friend");
             
             JSONObject p = new JSONObject();
             p.put("userid", c.userid);
@@ -102,6 +103,8 @@ public class AddFriend extends javax.swing.JFrame {
                 
                 Control ctl = new Control();
                 ctl.setVisible(true);        
+            } else {
+                JOptionPane.showMessageDialog(this, "He/She already your friend.");
             }
             
         } catch (Exception ex) {

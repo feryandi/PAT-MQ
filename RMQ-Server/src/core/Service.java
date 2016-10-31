@@ -44,7 +44,24 @@ public class Service {
             case "add_friend":
                 ret = addFriend((String) p.get("userid"),
                             (String) p.get("friendid"));
-                System.out.println("[x] Add Friend");
+                System.out.println("[x] Add Friend: " + ret);
+                break;
+            case "get_friends":
+                ret = getFriend((String) p.get("userid"));
+                System.out.println("[x] Get Friends");
+                break;
+            case "create_group":
+                break;
+            case "add_member":
+                ret =  addGroupMember((String) p.get("userid"), 
+                                    (String) p.get("group"));
+                System.out.println("[x] Add Group");
+                break;
+            case "del_member":
+                ret =  delGroupMember((String) p.get("userid"), 
+                                    (String) p.get("group"));
+                System.out.println("[x] Del Group");
+                break;
             default:
                 throw new IllegalArgumentException("Invalid method: " + method);
         }
@@ -90,18 +107,43 @@ public class Service {
     }
 
     private String addFriend(String adderid, String userid) throws SQLException {
-        // TO-DO: Check unique userid!
-        String sql = "INSERT INTO friend (uaid, ubid) " +
-                     "VALUES ('" + adderid + "', '" + userid + "');"; 
-        Statement stmt = db.connection.createStatement();
-        stmt.executeUpdate(sql);
+        JSONObject obj = new JSONObject();
+        Statement stmt = db.connection.createStatement();        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM `friend` WHERE uaid='" + adderid + "' AND ubid='" + userid + "';");
         
-	JSONObject obj = new JSONObject();
-	obj.put("status", "success");
+        if ( !rs.next() ) {
+            String sql = "INSERT INTO friend (uaid, ubid) " +
+                         "VALUES ('" + adderid + "', '" + userid + "');"; 
+            stmt = db.connection.createStatement();
+            stmt.executeUpdate(sql);
+
+            obj.put("status", "success");   
+        } else {
+            obj.put("status", "failed");               
+        }
         
         return obj.toJSONString();
     }
-    
+
+    private String getFriend(String userid) throws SQLException {
+        JSONObject obj = new JSONObject();
+        Statement stmt = db.connection.createStatement();        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM `friend` WHERE uaid='" + userid + "' OR ubid='" + userid + "';");
+        
+        if ( !rs.next() ) {
+            /*String sql = "INSERT INTO friend (uaid, ubid) " +
+                         "VALUES ('" + adderid + "', '" + userid + "');"; 
+            stmt = db.connection.createStatement();
+            stmt.executeUpdate(sql);*/
+
+            obj.put("status", "success");   
+        } else {
+            obj.put("status", "failed");               
+        }
+        
+        return obj.toJSONString();
+    }
+        
     private String addGroupMember(String userid, String group) throws SQLException, ParseException {
         Statement stmt = db.connection.createStatement();        
 	JSONObject obj = new JSONObject();     
