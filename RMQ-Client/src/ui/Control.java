@@ -5,8 +5,11 @@
  */
 package ui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JList;
 
 /**
  *
@@ -19,6 +22,19 @@ public class Control extends javax.swing.JFrame {
      */
     public Control() {
         initComponents();
+        
+        list_friend.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList)evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    int index = list.locationToIndex(evt.getPoint());
+                    Object userid = list.getModel().getElementAt(index);
+                    Chat c = new Chat(userid.toString());
+                    c.setVisible(true);
+                }
+            }
+        });
     }
 
     /**
