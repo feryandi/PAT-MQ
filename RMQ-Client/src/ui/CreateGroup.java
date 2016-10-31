@@ -6,6 +6,7 @@
 package ui;
 
 import core.Client;
+import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -100,10 +101,8 @@ public class CreateGroup extends javax.swing.JFrame {
             String status = (String) r.get("status");
             if (status.equals("success")) {
                 c.bind(txt_name.getText());
-                setVisible(false);                
-                
-                Control ctl = new Control();
-                ctl.setVisible(true);        
+                setVisible(false);      
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));     
             }
             
         } catch (Exception ex) {

@@ -6,6 +6,7 @@
 package ui;
 
 import core.Client;
+import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -100,9 +101,7 @@ public class AddFriend extends javax.swing.JFrame {
             String status = (String) r.get("status");
             if (status.equals("success")) {
                 setVisible(false);
-                
-                Control ctl = new Control();
-                ctl.setVisible(true);        
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             } else if (status.equals("failed-alread_friend")) {
                 JOptionPane.showMessageDialog(this, "He/She already your friend.");
             } else {

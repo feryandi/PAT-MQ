@@ -5,22 +5,30 @@
  */
 package ui;
 
+import core.Client;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  *
  * @author feryandi
  */
 public class Control extends javax.swing.JFrame {
-
+    Client c;
     /**
      * Creates new form Control
      */
     public Control() {
+        c = Client.getInstance();
         initComponents();
         
         list_friend.addMouseListener(new MouseAdapter() {
@@ -146,7 +154,6 @@ public class Control extends javax.swing.JFrame {
 
     private void btn_addfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addfriendActionPerformed
         this.setEnabled(false);
-        PopulateFriends();
         AddFriend r = new AddFriend();
         
         r.setVisible(true);
@@ -154,12 +161,45 @@ public class Control extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 setEnabled(true);
+                try {
+                    PopulateFriends();
+                } catch (Exception ex) {
+                    Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
         });
     }//GEN-LAST:event_btn_addfriendActionPerformed
 
-    private void PopulateFriends() {
-        list_friend.removeAll();
+    private void PopulateFriends() throws Exception {
+        String[] new_data = {""};
+        
+        JSONObject o = new JSONObject();
+        o.put("method", "get_friend");
+
+        JSONObject p = new JSONObject();
+        p.put("userid", c.userid);
+        o.put("params", p);            
+
+        String response = c.call(o.toJSONString());
+        System.out.println("Get Friend reponse: " + response);
+
+        /* Check Response */
+        JSONParser parser = new JSONParser();
+        JSONObject r = (JSONObject) parser.parse(response);
+        String status = (String) r.get("status");
+        if (status.equals("success")) {
+            JSONArray json_array = (JSONArray) r.get("data");
+            new_data = new String[json_array.size()];
+            for (int i=0; i<json_array.size(); i++){
+                new_data[i] = json_array.get(i).toString();
+            }
+            System.out.println(Arrays.toString(new_data));
+            Control ctl = new Control();
+            ctl.setVisible(true);
+        }
+        
+        list_friend.setListData(new_data);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
