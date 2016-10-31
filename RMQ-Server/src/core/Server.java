@@ -19,7 +19,7 @@ import org.json.simple.parser.JSONParser;
  * @author feryandi
  */
 public class Server {
-    private static final String SERVER_HOST = "localhost";
+    private static final String SERVER_HOST = "0.0.0.0";
     private static final String SERVER_QUEUE_NAME = "server_queue";
     private static final String SERVER_EXCHANGE_NAME = "server_exchange";
     

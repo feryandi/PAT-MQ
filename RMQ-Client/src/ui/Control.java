@@ -111,7 +111,7 @@ public class Control extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_creategroup, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_addfriend, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
+                        .addComponent(btn_addfriend, javax.swing.GroupLayout.PREFERRED_SIZE, 105, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -146,6 +146,7 @@ public class Control extends javax.swing.JFrame {
 
     private void btn_addfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addfriendActionPerformed
         this.setEnabled(false);
+        PopulateFriends();
         AddFriend r = new AddFriend();
         
         r.setVisible(true);
@@ -157,6 +158,10 @@ public class Control extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_btn_addfriendActionPerformed
 
+    private void PopulateFriends() {
+        list_friend.removeAll();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_addfriend;
     private javax.swing.JButton btn_creategroup;

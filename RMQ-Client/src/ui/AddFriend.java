@@ -99,12 +99,14 @@ public class AddFriend extends javax.swing.JFrame {
             JSONObject r = (JSONObject) parser.parse(response);
             String status = (String) r.get("status");
             if (status.equals("success")) {
-                setVisible(false);                
+                setVisible(false);
                 
                 Control ctl = new Control();
                 ctl.setVisible(true);        
-            } else {
+            } else if (status.equals("failed-alread_friend")) {
                 JOptionPane.showMessageDialog(this, "He/She already your friend.");
+            } else {
+                JOptionPane.showMessageDialog(this, "User ID not found!");
             }
             
         } catch (Exception ex) {

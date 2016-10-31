@@ -108,18 +108,25 @@ public class Service {
 
     private String addFriend(String adderid, String userid) throws SQLException {
         JSONObject obj = new JSONObject();
-        Statement stmt = db.connection.createStatement();        
-        ResultSet rs = stmt.executeQuery("SELECT * FROM `friend` WHERE uaid='" + adderid + "' AND ubid='" + userid + "';");
+        Statement stmt = db.connection.createStatement();
         
-        if ( !rs.next() ) {
-            String sql = "INSERT INTO friend (uaid, ubid) " +
-                         "VALUES ('" + adderid + "', '" + userid + "');"; 
-            stmt = db.connection.createStatement();
-            stmt.executeUpdate(sql);
+        ResultSet result_set = stmt.executeQuery("SELECT * FROM `user` WHERE userid='" + userid + "' LIMIT 1;");
+        
+        if (result_set.next()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM `friend` WHERE (uaid='" + adderid + "' AND ubid='" + userid + "') OR (uaid='" + userid + "' AND ubid='" + adderid + "');");
 
-            obj.put("status", "success");   
+            if (!rs.next()) {
+                String sql = "INSERT INTO friend (uaid, ubid) "
+                        + "VALUES ('" + adderid + "', '" + userid + "');";
+                stmt = db.connection.createStatement();
+                stmt.executeUpdate(sql);
+
+                obj.put("status", "success");
+            } else {
+                obj.put("status", "failed-alread_friend");
+            }
         } else {
-            obj.put("status", "failed");               
+            obj.put("status", "failed-id_not_found");            
         }
         
         return obj.toJSONString();
