@@ -62,7 +62,8 @@ public class Database {
             stmt = connection.createStatement();
             sql = "CREATE TABLE chat_group " +
                     "(uid INTEGER PRIMARY KEY     NOT NULL," +
-                    " groups TEXT)";
+                    " group_name TEXT   NOT NULL," +
+                    " is_admin BOOLEAN)";
             stmt.executeUpdate(sql);
             stmt.close();            
             
