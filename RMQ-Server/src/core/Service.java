@@ -139,7 +139,7 @@ public class Service {
         ResultSet rs = stmt.executeQuery("SELECT * FROM `friend` WHERE uaid='" + userid + "' OR ubid='" + userid + "';");
         
         JSONArray list = new JSONArray();
-        if ( !!rs.next() ) {            
+        while ( rs.next() ) {            
             success = true;
             String uaid = (String) rs.getString("uaid");
             String ubid = (String) rs.getString("ubid");

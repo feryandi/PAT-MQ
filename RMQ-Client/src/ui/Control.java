@@ -194,11 +194,7 @@ public class Control extends javax.swing.JFrame {
             for (int i=0; i<json_array.size(); i++){
                 new_data[i] = json_array.get(i).toString();
             }
-            System.out.println(Arrays.toString(new_data));
-            Control ctl = new Control();
-            ctl.setVisible(true);
         }
-        
         list_friend.setListData(new_data);
     }
     
