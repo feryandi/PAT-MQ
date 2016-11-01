@@ -100,7 +100,7 @@ public class CreateGroup extends javax.swing.JFrame {
             JSONObject r = (JSONObject) parser.parse(response);
             String status = (String) r.get("status");
             if (status.equals("success")) {
-                c.bind(txt_name.getText());
+                c.bind("g_" + txt_name.getText());
                 setVisible(false);      
                 this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));     
             }

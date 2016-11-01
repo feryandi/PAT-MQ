@@ -151,7 +151,9 @@ public class Chat extends javax.swing.JFrame {
             JSONObject r = (JSONObject) parser.parse(response);
             String status = (String) r.get("status");
             if (status.equals("success")) {
-                messages.add("{\"from\":\"" + c.userid + "\", \"message\":\"" + txt_message.getText() + "\"}");
+                if (this.type == 0) {
+                    messages.add("{\"from\":\"" + c.userid + "\", \"message\":\"" + txt_message.getText() + "\"}");
+                }
                 c.message_memory.replace(userid, messages);
                 refreshChat();
                 txt_message.setText("");
