@@ -248,16 +248,26 @@ public class Service {
     }
     
     private String addGroupMember(String user_id, String group_id, String admin_status) throws SQLException, ParseException {
-        Statement stmt = db.connection.createStatement();        
-	JSONObject obj = new JSONObject();     
-        
-        String sql = "INSERT INTO `group_member` (uid, group_id, is_admin) " +
-                "VALUES ('" + user_id + "', '" + group_id + "', '" + admin_status + "');";
-        
-        stmt.executeUpdate(sql);
-        stmt.close();
-        
-	obj.put("status", "success");
+        JSONObject obj = new JSONObject();
+        int uid = getIDByUserid(user_id);
+        if (uid != -1) {
+            Statement stmt = db.connection.createStatement();
+            String sql = "SELECT * FROM `group_member` WHERE "
+                    + "group_id='" + group_id + "' AND uid='" + uid + "' LIMIT 1;";
+            ResultSet result_set = stmt.executeQuery(sql);
+            if (!result_set.next()) {
+                sql = "INSERT INTO `group_member` (uid, group_id, is_admin) "
+                        + "VALUES ('" + uid + "', '" + group_id + "', '" + admin_status + "');";
+                stmt = db.connection.createStatement();
+                stmt.executeUpdate(sql);
+                stmt.close();
+                obj.put("status", "success");
+            } else {
+                obj.put("status", "failed-alread_in_group");
+            }
+        } else {
+            obj.put("status", "failed-id_not_found");
+        }
         return obj.toJSONString();
     }
     
@@ -278,10 +288,10 @@ public class Service {
 	JSONObject obj = new JSONObject();     
         
         ResultSet rs = stmt.executeQuery("SELECT * FROM `user` WHERE userid='" + userid + "';");
-        rs.next();
-        id = rs.getInt("id");
+        if (rs.next()) {
+            id = rs.getInt("id");
+        }
         
-        rs.close();
         stmt.close();
         
         return id;        

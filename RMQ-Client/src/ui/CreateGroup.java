@@ -88,7 +88,7 @@ public class CreateGroup extends javax.swing.JFrame {
             o.put("method", "create_group");
             
             JSONObject p = new JSONObject();
-            p.put("userid", Integer.toString(c.id));
+            p.put("userid", c.userid);
             p.put("group", txt_name.getText());
             
             o.put("params", p);

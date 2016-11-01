@@ -6,6 +6,8 @@
 package ui;
 
 import core.Client;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -68,6 +70,11 @@ public class MemberGroup extends javax.swing.JFrame {
         });
 
         btn_new.setText("ADD NEW");
+        btn_new.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_newActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,6 +130,24 @@ public class MemberGroup extends javax.swing.JFrame {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_removeActionPerformed
+
+    private void btn_newActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_newActionPerformed
+        this.setEnabled(false);
+        AddMember r = new AddMember(gid);
+        
+        r.setVisible(true);
+        r.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                setEnabled(true);
+                try {
+                    PopulateMembers();
+                } catch (Exception ex) {
+                    Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }//GEN-LAST:event_btn_newActionPerformed
 
     public void PopulateMembers() throws Exception {
         String[] new_data = {""};

@@ -5,12 +5,19 @@
  */
 package ui;
 
+import core.Client;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 /**
  *
  * @author feryandi
  */
 public class AddMember extends javax.swing.JFrame {
-
+    Client c;
     int gid = -1;
     
     /**
@@ -18,7 +25,9 @@ public class AddMember extends javax.swing.JFrame {
      */
     public AddMember(int gid) {
         this.gid = gid;
+        c = Client.getInstance();
         initComponents();
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
     /**
@@ -39,6 +48,11 @@ public class AddMember extends javax.swing.JFrame {
         jLabel1.setText("USERID");
 
         btn_add.setText("ADD MEMBER");
+        btn_add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_addActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -68,6 +82,42 @@ public class AddMember extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
+        try {
+            JSONObject o = new JSONObject();
+            o.put("method", "add_member");
+            
+            JSONObject p = new JSONObject();
+            p.put("userid", txt_userid.getText());
+            p.put("group", Integer.toString(gid));
+            p.put("admin_status", "0");
+ 
+            o.put("params", p);
+            
+            System.out.println("REQ: " + o.toJSONString());
+            
+                        
+            String response = c.call(o.toJSONString());          
+            
+            /* Check Response */
+            JSONParser parser = new JSONParser();        
+            JSONObject r = (JSONObject) parser.parse(response);
+            String status = (String) r.get("status");
+            System.out.println(response);
+            if (status.equals("success")) {
+                setVisible(false);
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            } else if (status.equals("failed-alread_in_group")) {
+                JOptionPane.showMessageDialog(this, "He/She already group.");
+            } else {
+                JOptionPane.showMessageDialog(this, "User ID not found!");
+            }
+            
+        } catch (Exception ex) {
+
+        }
+    }//GEN-LAST:event_btn_addActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
