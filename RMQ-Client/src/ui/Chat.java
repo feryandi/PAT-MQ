@@ -34,7 +34,7 @@ public class Chat extends javax.swing.JFrame {
             c = Client.getInstance();
             initComponents();
             this.userid = userid;
-            lbl_chatwith.setText("Chat with " + userid + " DEBUG TYPE: " + type);
+            lbl_chatwith.setText("Chat with " + userid);
             
             this.type = type;
             if (type == 0) {
@@ -147,7 +147,10 @@ public class Chat extends javax.swing.JFrame {
             o.put("method", "message");
             
             JSONObject p = new JSONObject();
-            p.put("message", "{\"from\":\"" + group + "\", \"sender\":\"" + username + "\", \"message\":\"" + txt_message.getText() + "\"}");
+            p.put("message", "{\"from\":\"" + group + "\", "
+                            + "\"sender\":\"" + username + "\", "
+                            + "\"gid\":\"" + this.type + "\", "
+                            + "\"message\":\"" + txt_message.getText() + "\"}");
             p.put("key", userid);
             
             o.put("params", p);          
@@ -160,7 +163,10 @@ public class Chat extends javax.swing.JFrame {
             String status = (String) r.get("status");
             if (status.equals("success")) {
                 if (this.type == 0) {
-                    messages.add("{\"from\":\"" + group + "\", \"sender\":\"" + username + "\", \"message\":\"" + txt_message.getText() + "\"}");
+                    messages.add("{\"from\":\"" + group + "\", "
+                                + "\"sender\":\"" + username + "\", "
+                                + "\"gid\":\"" + this.type + "\", "
+                                + "\"message\":\"" + txt_message.getText() + "\"}");
                 }
                 c.message_memory.replace(userid, messages);
                 refreshChat();

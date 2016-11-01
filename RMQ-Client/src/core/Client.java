@@ -13,6 +13,8 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.QueueingConsumer;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +72,7 @@ public class Client {
                                            AMQP.BasicProperties properties, byte[] body) throws IOException {
                     try {
                         String message = new String(body, "UTF-8");
-                        System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
+                        System.out.println("[x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
                         
                         JSONParser parser = new JSONParser();
                         JSONObject r = (JSONObject) parser.parse(message);
@@ -91,6 +93,16 @@ public class Client {
                         if (active_chat.containsKey(from)) {
                             Chat ch = active_chat.get(from);
                             ch.refreshChat();
+                        } else { 
+                            Chat ch = new Chat(from, Integer.parseInt((String)r.get("gid")));
+                            ch.setVisible(true);
+
+                            ch.addWindowListener(new WindowAdapter() {
+                                @Override
+                                public void windowClosing(WindowEvent e) {
+                                    active_chat.remove(from);
+                                }
+                            });
                         }
                         
                     } catch (ParseException ex) {

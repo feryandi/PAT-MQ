@@ -93,10 +93,7 @@ public class AddMember extends javax.swing.JFrame {
             p.put("group", Integer.toString(gid));
             p.put("admin_status", "0");
  
-            o.put("params", p);
-            
-            System.out.println("REQ: " + o.toJSONString());
-            
+            o.put("params", p);          
                         
             String response = c.call(o.toJSONString());          
             
