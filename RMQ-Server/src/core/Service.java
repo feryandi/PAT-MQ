@@ -181,7 +181,10 @@ public class Service {
         JSONArray list = new JSONArray();
         while ( rs.next() ) {            
             success = true;
-            list.add(rs.getString("group_name"));
+            JSONObject gr = new JSONObject();
+            gr.put("name", rs.getString("group_name"));
+            gr.put("id", rs.getInt("group_id"));
+            list.add(gr);
         } 
         
         if (success)  {

@@ -19,12 +19,14 @@ import org.json.simple.parser.JSONParser;
 public class MemberGroup extends javax.swing.JFrame {
 
     Client c;
+    int gid = -1;
     
     /**
      * Creates new form MemberGroup
      */
-    public MemberGroup() {
+    public MemberGroup(int gid) {
         c = Client.getInstance();
+        this.gid = gid;
         initComponents();
     }
 

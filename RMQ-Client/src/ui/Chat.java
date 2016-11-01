@@ -23,6 +23,7 @@ public class Chat extends javax.swing.JFrame {
 
     Client c;
     String userid = null;
+    int type = -1;
     ArrayList<String> messages = new ArrayList<>();
     
     /**
@@ -33,8 +34,9 @@ public class Chat extends javax.swing.JFrame {
             c = Client.getInstance();
             initComponents();
             this.userid = userid;
-            lbl_chatwith.setText("Chat with " + userid);
+            lbl_chatwith.setText("Chat with " + userid + " DEBUG TYPE: " + type);
             
+            this.type = type;
             if (type == 0) {
                 btn_list.setVisible(false);
             }
@@ -161,7 +163,7 @@ public class Chat extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_sendActionPerformed
 
     private void btn_listActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_listActionPerformed
-        MemberGroup r = new MemberGroup();
+        MemberGroup r = new MemberGroup(type);
         r.setVisible(true);
     }//GEN-LAST:event_btn_listActionPerformed
 

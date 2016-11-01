@@ -10,7 +10,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
@@ -23,7 +25,10 @@ import org.json.simple.parser.JSONParser;
  * @author feryandi
  */
 public class Control extends javax.swing.JFrame {
+    
     Client c;
+    List<Integer> group_list_id = new ArrayList<>();
+    
     /**
      * Creates new form Control
      */
@@ -64,7 +69,7 @@ public class Control extends javax.swing.JFrame {
                     Object userid = list.getModel().getElementAt(index);
                     final String userids = userid.toString();
                     
-                    Chat ch = new Chat(userids, 1);
+                    Chat ch = new Chat(userids, group_list_id.get(index));
                     ch.setVisible(true);
                     
                     ch.addWindowListener(new WindowAdapter() {
@@ -226,6 +231,7 @@ public class Control extends javax.swing.JFrame {
     
     private void PopulateGroups() throws Exception {
         String[] new_data = {""};
+        group_list_id.clear();
         
         JSONObject o = new JSONObject();
         o.put("method", "get_group");
@@ -243,9 +249,13 @@ public class Control extends javax.swing.JFrame {
         String status = (String) r.get("status");
         if (status.equals("success")) {
             JSONArray json_array = (JSONArray) r.get("data");
-            new_data = new String[json_array.size()];
+            
+            new_data = new String[json_array.size()];       
+            
             for (int i=0; i<json_array.size(); i++){
-                new_data[i] = json_array.get(i).toString();
+                JSONObject jso = (JSONObject) json_array.get(i);
+                new_data[i] = (String) jso.get("name");
+                group_list_id.add(((Long)jso.get("id")).intValue());
             }
         }
         list_group.setListData(new_data);
