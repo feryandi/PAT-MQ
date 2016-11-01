@@ -54,6 +54,10 @@ public class Service {
                 ret = getGroup((String) p.get("userid"));
                 System.out.println("[x] Get Group");
                 break;
+            case "get_member":
+                ret = getGroupMember((String) p.get("groupid"));
+                System.out.println("[x] Get Member Group");
+                break;
             case "create_group":
                 ret = addGroup((String) p.get("userid"),
                             (String) p.get("group"));

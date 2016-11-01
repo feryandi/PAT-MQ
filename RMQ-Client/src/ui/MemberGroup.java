@@ -8,6 +8,7 @@ package ui;
 import core.Client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,9 +26,15 @@ public class MemberGroup extends javax.swing.JFrame {
      * Creates new form MemberGroup
      */
     public MemberGroup(int gid) {
-        c = Client.getInstance();
-        this.gid = gid;
-        initComponents();
+        try {
+            c = Client.getInstance();
+            this.gid = gid;
+            initComponents();
+            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            PopulateMembers();
+        } catch (Exception ex) {
+            Logger.getLogger(MemberGroup.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -124,7 +131,7 @@ public class MemberGroup extends javax.swing.JFrame {
         o.put("method", "get_member");
 
         JSONObject p = new JSONObject();
-        p.put("groupid", c.userid); // TO-DO!!
+        p.put("groupid", Integer.toString(gid));
         o.put("params", p);            
 
         String response = c.call(o.toJSONString());
