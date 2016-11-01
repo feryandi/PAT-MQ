@@ -58,13 +58,20 @@ public class Database {
                     "PRIMARY KEY (uaid, ubid))";
             stmt.executeUpdate(sql);
             
-            // Group Table
+            // Group Member Table
             stmt = connection.createStatement();
-            sql = "CREATE TABLE chat_group " +
+            sql = "CREATE TABLE group_member " +
                     "(id INTEGER PRIMARY KEY     NOT NULL," +
                     " uid INTEGER   NOT NULL," +
-                    " group_name TEXT   NOT NULL," +
+                    " group_id INTEGER  NOT NULL," +
                     " is_admin BOOLEAN)";
+            stmt.executeUpdate(sql);
+            
+            // Group Table
+            stmt = connection.createStatement();
+            sql = "CREATE TABLE group_chat " +
+                    "(id INTEGER PRIMARY KEY     NOT NULL," +
+                    " name TEXT   NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();            
             

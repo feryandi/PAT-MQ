@@ -48,6 +48,7 @@ public class Login extends javax.swing.JFrame {
         btn_register = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         btn_login.setText("LOGIN");
         btn_login.addActionListener(new java.awt.event.ActionListener() {
