@@ -27,9 +27,11 @@ public class Control extends javax.swing.JFrame {
     /**
      * Creates new form Control
      */
-    public Control() {
+    public Control() throws Exception {
         c = Client.getInstance();
         initComponents();
+        PopulateFriends();
+        PopulateGroups();
         
         list_friend.addMouseListener(new MouseAdapter() {
             @Override
@@ -168,6 +170,11 @@ public class Control extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 setEnabled(true);
+                try {
+                    PopulateGroups();
+                } catch (Exception ex) {
+                    Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }//GEN-LAST:event_btn_creategroupActionPerformed
@@ -186,7 +193,6 @@ public class Control extends javax.swing.JFrame {
                 } catch (Exception ex) {
                     Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
         });
     }//GEN-LAST:event_btn_addfriendActionPerformed
@@ -216,6 +222,33 @@ public class Control extends javax.swing.JFrame {
             }
         }
         list_friend.setListData(new_data);
+    }
+    
+    private void PopulateGroups() throws Exception {
+        String[] new_data = {""};
+        
+        JSONObject o = new JSONObject();
+        o.put("method", "get_group");
+
+        JSONObject p = new JSONObject();
+        p.put("userid", Integer.toString(c.id));
+        o.put("params", p);            
+
+        String response = c.call(o.toJSONString());
+        System.out.println("Get Group reponse: " + response);
+
+        /* Check Response */
+        JSONParser parser = new JSONParser();
+        JSONObject r = (JSONObject) parser.parse(response);
+        String status = (String) r.get("status");
+        if (status.equals("success")) {
+            JSONArray json_array = (JSONArray) r.get("data");
+            new_data = new String[json_array.size()];
+            for (int i=0; i<json_array.size(); i++){
+                new_data[i] = json_array.get(i).toString();
+            }
+        }
+        list_group.setListData(new_data);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

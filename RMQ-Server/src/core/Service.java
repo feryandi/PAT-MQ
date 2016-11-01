@@ -50,12 +50,20 @@ public class Service {
                 ret = getFriend((String) p.get("userid"));
                 System.out.println("[x] Get Friend");
                 break;
+            case "get_group":
+                ret = getGroup((String) p.get("userid"));
+                System.out.println("[x] Get Group");
+                break;
             case "create_group":
+                ret = addGroup((String) p.get("userid"),
+                            (String) p.get("group"));
+                System.out.println("[x] Add Group");
                 break;
             case "add_member":
                 ret =  addGroupMember((String) p.get("userid"), 
-                                    (String) p.get("group"));
-                System.out.println("[x] Add Group");
+                                    (String) p.get("group"),
+                                    (String) p.get("admin_status"));
+                System.out.println("[x] Add Member");
                 break;
             case "del_member":
                 ret =  delGroupMember((String) p.get("userid"), 
@@ -160,35 +168,57 @@ public class Service {
         
         return obj.toJSONString();
     }
+    
+    private String getGroup(String userid) throws SQLException {
+        boolean success = false;
+        JSONObject obj = new JSONObject();
+        Statement stmt = db.connection.createStatement();        
+        ResultSet rs = stmt.executeQuery("SELECT group_chat.name AS group_name, group_chat.id AS group_id FROM `group_member` JOIN `group_chat` ON group_member.group_id = group_chat.id WHERE group_member.uid='" + userid + "';");
+                
+        JSONArray list = new JSONArray();
+        while ( rs.next() ) {            
+            success = true;
+            list.add(rs.getString("group_name"));
+        } 
         
-    private String addGroupMember(String userid, String group) throws SQLException, ParseException {
+        if (success)  {
+            obj.put("data", list);            
+            obj.put("status", "success");   
+        } else {
+            obj.put("status", "failed");               
+        }
+        
+        return obj.toJSONString();
+    }
+        
+    private String addGroupMember(String user_id, String group_id, String admin_status) throws SQLException, ParseException {
         Statement stmt = db.connection.createStatement();        
 	JSONObject obj = new JSONObject();     
         
-        ResultSet rs = stmt.executeQuery("SELECT * FROM `chat_group` WHERE uid='" + userid + ";");
+        String sql = "INSERT INTO `group_member` (uid, group_id, is_admin) " +
+                "VALUES ('" + user_id + "', '" + group_id + "', '" + admin_status + "');";
         
-        if ( !rs.next() ) {
-            JSONArray groups = new JSONArray();
-            groups.add(group);
-            
-            String sql = "INSERT INTO `chat_group` (uid, groups) " +
-                         "VALUES ('" + userid + "', '" + groups.toJSONString() + "');"; 
-            stmt = db.connection.createStatement();
-            stmt.executeUpdate(sql);
-        } else {
-            JSONParser parser = new JSONParser();        
-            JSONArray p = (JSONArray) parser.parse(rs.getString("groups"));
-            p.add(group);
-            
-            String sql = "UPDATE `chat_group` " +
-                         "SET groups='" + p.toJSONString() + "' " +
-                         "WHERE userid='" + userid + "');"; 
-            stmt = db.connection.createStatement();
-            stmt.executeUpdate(sql);
-        }
-        
-        rs.close();
+        stmt.executeUpdate(sql);
         stmt.close();
+        
+	obj.put("status", "success");
+        return obj.toJSONString();
+    }
+    
+    private String addGroup(String user_id, String group_name) throws SQLException, ParseException {
+        Statement stmt = db.connection.createStatement();        
+	JSONObject obj = new JSONObject();     
+        
+        String sql = "INSERT INTO `group_chat` (name) " +
+                "VALUES ('" + group_name + "' );";
+        
+        stmt.executeUpdate(sql);
+        ResultSet generated_keys = stmt.getGeneratedKeys();
+        Integer group_id = generated_keys.getInt(1);
+        
+        stmt.close();
+        
+        addGroupMember(user_id, group_id.toString(), "1");
         
 	obj.put("status", "success");
         return obj.toJSONString();

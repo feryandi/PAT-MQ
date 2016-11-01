@@ -85,10 +85,10 @@ public class CreateGroup extends javax.swing.JFrame {
     private void btn_createActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_createActionPerformed
         try {
             JSONObject o = new JSONObject();
-            o.put("method", "add_member");
+            o.put("method", "create_group");
             
             JSONObject p = new JSONObject();
-            p.put("userid", c.userid);
+            p.put("userid", Integer.toString(c.id));
             p.put("group", txt_name.getText());
             
             o.put("params", p);
