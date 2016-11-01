@@ -39,15 +39,17 @@ public class Chat extends javax.swing.JFrame {
             this.type = type;
             if (type == 0) {
                 btn_list.setVisible(false);
+            } else {
+                this.userid = "g_" + userid;
             }
             
             /* Message Memory */
-            if (c.message_memory.containsKey(userid)) {
-                messages = c.message_memory.get(userid);
+            if (c.message_memory.containsKey(this.userid)) {
+                messages = c.message_memory.get(this.userid);
             } else {
-                c.message_memory.put(userid, messages);
+                c.message_memory.put(this.userid, messages);
             }
-            c.active_chat.put(userid, this);
+            c.active_chat.put(this.userid, this);
             
             refreshChat();
         } catch (ParseException ex) {
@@ -135,11 +137,17 @@ public class Chat extends javax.swing.JFrame {
 
     private void btn_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sendActionPerformed
         try {
+            String username = c.userid;
+            String group = this.userid;
+            if (type == 0) {
+                group = username;
+            }
+            
             JSONObject o = new JSONObject();
             o.put("method", "message");
             
             JSONObject p = new JSONObject();
-            p.put("message", "{\"from\":\"" + c.userid + "\", \"message\":\"" + txt_message.getText() + "\"}");
+            p.put("message", "{\"from\":\"" + group + "\", \"sender\":\"" + username + "\", \"message\":\"" + txt_message.getText() + "\"}");
             p.put("key", userid);
             
             o.put("params", p);          
@@ -152,7 +160,7 @@ public class Chat extends javax.swing.JFrame {
             String status = (String) r.get("status");
             if (status.equals("success")) {
                 if (this.type == 0) {
-                    messages.add("{\"from\":\"" + c.userid + "\", \"message\":\"" + txt_message.getText() + "\"}");
+                    messages.add("{\"from\":\"" + group + "\", \"sender\":\"" + username + "\", \"message\":\"" + txt_message.getText() + "\"}");
                 }
                 c.message_memory.replace(userid, messages);
                 refreshChat();
@@ -178,7 +186,7 @@ public class Chat extends javax.swing.JFrame {
             JSONParser p = new JSONParser();
             JSONObject obj = (JSONObject) p.parse(s);
             
-            msg[i] = obj.get("from") + ": " + obj.get("message");
+            msg[i] = obj.get("sender") + ": " + obj.get("message");
             i++;
         }
         
