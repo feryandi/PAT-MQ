@@ -32,7 +32,7 @@ public class Server {
     public Server() {
         try {
             s = new Service();            
-            System.out.println(" [x] Server Service Up and Running");  
+            System.out.println("[x] Server Service Up and Running");  
             
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(SERVER_HOST);
@@ -45,7 +45,7 @@ public class Server {
             consumer = new QueueingConsumer(channel);
             channel.basicConsume(SERVER_QUEUE_NAME, false, consumer);
 
-            System.out.println(" [x] Server Queue for RPC Activated");            
+            System.out.println("[x] Server Queue for RPC Activated");            
             listen();
             
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class Server {
                         response = s.execute(method, params.toJSONString());       
                     }             
                 } catch (Exception e){
-                    System.out.println(" [.] Exception: " + e.toString());
+                    System.out.println("[.] Exception: " + e.toString());
                     e.printStackTrace();
                     response = "";
                 } finally {  

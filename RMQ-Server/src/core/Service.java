@@ -5,6 +5,7 @@
  */
 package core;
 
+import com.rabbitmq.client.Channel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -189,7 +190,7 @@ public class Service {
             gr.put("name", rs.getString("group_name"));
             gr.put("id", rs.getInt("group_id"));
             list.add(gr);
-        } 
+        }
         
         if (success)  {
             obj.put("data", list);            
@@ -264,10 +265,25 @@ public class Service {
         Statement stmt = db.connection.createStatement();        
 	JSONObject obj = new JSONObject();     
         
-        stmt.executeUpdate("DELETE FROM `group_member` WHERE uid='" + userid + "' AND group_id='" + group_id + "';");
+        stmt.executeUpdate("DELETE FROM `group_member` WHERE uid='" + getIDByUserid(userid) + "' AND group_id='" + group_id + "';");
         stmt.close();
         
 	obj.put("status", "success");
         return obj.toJSONString();
+    }
+    
+    private int getIDByUserid(String userid) throws SQLException {
+        int id = -1;
+        Statement stmt = db.connection.createStatement();        
+	JSONObject obj = new JSONObject();     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM `user` WHERE userid='" + userid + "';");
+        rs.next();
+        id = rs.getInt("id");
+        
+        rs.close();
+        stmt.close();
+        
+        return id;        
     }
 }

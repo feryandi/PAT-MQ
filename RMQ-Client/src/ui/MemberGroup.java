@@ -105,7 +105,7 @@ public class MemberGroup extends javax.swing.JFrame {
             
             JSONObject p = new JSONObject();
             p.put("userid", list_member.getSelectedValue());
-            p.put("group", 0); // TO-DO
+            p.put("group", Integer.toString(gid));
             
             o.put("params", p);   
             
@@ -116,7 +116,7 @@ public class MemberGroup extends javax.swing.JFrame {
             JSONObject r = (JSONObject) parser.parse(response);
             String status = (String) r.get("status");
             if (status.equals("success")) {
-                
+                PopulateMembers();
             }
             
         } catch (Exception ex) {
