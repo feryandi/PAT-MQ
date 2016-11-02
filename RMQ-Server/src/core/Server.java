@@ -79,13 +79,21 @@ public class Server {
                     JSONObject params = (JSONObject) p.get("params");  
                     String method = (String) p.get("method");
                     
-                    if (method.equals("message")) {  
+                    if (method.equals("message")) {
                         String msg = (String) params.get("message");
-                        channel.basicPublish(SERVER_EXCHANGE_NAME, 
-                                (String) params.get("key"), 
-                                null,
-                                msg.getBytes());
+                        emit((String) params.get("key"), msg);
                         response = "{\"status\":\"success\"}";
+                    } else if (method.equals("del_member")) {
+                        response = s.execute(method, params.toJSONString());
+                        
+                        String uid = Integer.toString(s.getIDByUserid((String) params.get("userid")));
+                        String gid = (String) params.get("group");
+                        String gname = s.getNameByGroupid(gid);
+                        JSONObject obj = new JSONObject();
+                        obj.put("method", "kick");
+                        obj.put("gid", "g_" + gname + "_"+ gid);
+                        emit((String) params.get("userid"), obj.toJSONString());
+                        
                     } else {
                         response = s.execute(method, params.toJSONString());       
                     }             
@@ -102,7 +110,7 @@ public class Server {
             e.printStackTrace();
         }
     }
-    
+        
     public void emit(String key, String message) throws IOException {        
         channel.basicPublish(SERVER_EXCHANGE_NAME, key, null, message.getBytes());
     }

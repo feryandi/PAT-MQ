@@ -218,6 +218,7 @@ public class Service {
         addGroupMember(user_id, group_id.toString(), "1");
 
         obj.put("status", "success");
+        obj.put("group_id", group_id.toString());
         return obj.toJSONString();
     }
 
@@ -273,16 +274,17 @@ public class Service {
     
     private String delGroupMember(String userid, String group_id) throws SQLException, ParseException {
         Statement stmt = db.connection.createStatement();        
-	JSONObject obj = new JSONObject();     
-        
-        stmt.executeUpdate("DELETE FROM `group_member` WHERE uid='" + getIDByUserid(userid) + "' AND group_id='" + group_id + "';");
+	JSONObject obj = new JSONObject();
+        String uid = Integer.toString(getIDByUserid(userid));
+        stmt.executeUpdate("DELETE FROM `group_member` WHERE uid='" + uid + "' AND group_id='" + group_id + "';");
         stmt.close();
         
 	obj.put("status", "success");
+        
         return obj.toJSONString();
     }
     
-    private int getIDByUserid(String userid) throws SQLException {
+    public int getIDByUserid(String userid) throws SQLException {
         int id = -1;
         Statement stmt = db.connection.createStatement();        
 	JSONObject obj = new JSONObject();     
@@ -295,5 +297,20 @@ public class Service {
         stmt.close();
         
         return id;        
+    }
+    
+    public String getNameByGroupid(String groupid) throws SQLException {
+        String name = "";
+        Statement stmt = db.connection.createStatement();        
+	JSONObject obj = new JSONObject();     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM `group_chat` WHERE id='" + groupid + "';");
+        if (rs.next()) {
+            name = rs.getString("name");
+        }
+        
+        stmt.close();
+        
+        return name;        
     }
 }

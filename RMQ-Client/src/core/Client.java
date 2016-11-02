@@ -71,38 +71,44 @@ public class Client {
                 public void handleDelivery(String consumerTag, Envelope envelope,
                                            AMQP.BasicProperties properties, byte[] body) throws IOException {
                     try {
+                        JSONParser parser = new JSONParser();
                         String message = new String(body, "UTF-8");
+                        
                         System.out.println("[x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
                         
-                        JSONParser parser = new JSONParser();
                         JSONObject r = (JSONObject) parser.parse(message);
-                        String from = (String) r.get("from");
                         
-                        ArrayList<String> m;
-                        
-                        if (message_memory.containsKey(from)) {
-                            m = message_memory.get(from);
-                            m.add(message);
-                            message_memory.replace(from, m);                            
+                        if (r.containsKey("method")) {
+                            System.out.println("GID = " + r.get("gid"));
+                            unbind((String) r.get("gid"));
                         } else {
-                            m = new ArrayList<>();
-                            m.add(message);
-                            message_memory.put(from, m);
-                        }
-                        
-                        if (active_chat.containsKey(from)) {
-                            Chat ch = active_chat.get(from);
-                            ch.refreshChat();
-                        } else { 
-                            Chat ch = new Chat(from, Integer.parseInt((String)r.get("gid")));
-                            ch.setVisible(true);
+                            String from = (String) r.get("from");
+                            ArrayList<String> m;
 
-                            ch.addWindowListener(new WindowAdapter() {
-                                @Override
-                                public void windowClosing(WindowEvent e) {
-                                    active_chat.remove(from);
-                                }
-                            });
+                            if (message_memory.containsKey(from)) {
+                                m = message_memory.get(from);
+                                m.add(message);
+                                message_memory.replace(from, m);                            
+                            } else {
+                                m = new ArrayList<>();
+                                m.add(message);
+                                message_memory.put(from, m);
+                            }
+
+                            if (active_chat.containsKey(from)) {
+                                Chat ch = active_chat.get(from);
+                                ch.refreshChat();
+                            } else { 
+                                Chat ch = new Chat(from, Integer.parseInt((String)r.get("gid")));
+                                ch.setVisible(true);
+
+                                ch.addWindowListener(new WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(WindowEvent e) {
+                                        active_chat.remove(from);
+                                    }
+                                });
+                            }
                         }
                         
                     } catch (ParseException ex) {
@@ -149,6 +155,14 @@ public class Client {
     public void bind(String key) {
         try {        
             channel.queueBind(CLIENT_MSG_QUEUE, SERVER_EXCHANGE_NAME, key);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void unbind(String key) {
+        try {
+            channel.queueUnbind(CLIENT_MSG_QUEUE, SERVER_EXCHANGE_NAME, key);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

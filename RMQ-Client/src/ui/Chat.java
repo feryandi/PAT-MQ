@@ -40,7 +40,7 @@ public class Chat extends javax.swing.JFrame {
             if (type == 0) {
                 btn_list.setVisible(false);
             } else {
-                this.userid = "g_" + userid;
+                this.userid = "g_" + userid + "_" + type;
             }
             
             /* Message Memory */

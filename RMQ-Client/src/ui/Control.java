@@ -255,7 +255,7 @@ public class Control extends javax.swing.JFrame {
             for (int i=0; i<json_array.size(); i++){
                 JSONObject jso = (JSONObject) json_array.get(i);
                 new_data[i] = (String) jso.get("name");
-                c.bind("g_" + new_data[i]);
+                c.bind("g_" + new_data[i] + "_" + jso.get("id"));
                 group_list_id.add(((Long)jso.get("id")).intValue());
             }
         }
