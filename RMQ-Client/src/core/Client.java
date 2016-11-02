@@ -42,7 +42,7 @@ public class Client {
     private String CLIENT_MSG_QUEUE;
     
     /* Server Queue */
-    private static final String SERVER_HOST = "localhost";
+    private static final String SERVER_HOST = "192.168.43.130";
     private String SERVER_QUEUE_NAME = "server_queue";
     private static final String SERVER_EXCHANGE_NAME = "server_exchange";
     
