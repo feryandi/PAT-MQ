@@ -19,7 +19,7 @@ import org.json.simple.parser.JSONParser;
  * @author feryandi
  */
 public class Server {
-    private static final String SERVER_HOST = "localhost";
+    private static final String SERVER_HOST = "hmif.itb.ac.id";
     private static final String SERVER_QUEUE_NAME = "server_queue";
     private static final String SERVER_EXCHANGE_NAME = "server_exchange";
     
@@ -83,19 +83,24 @@ public class Server {
                         String msg = (String) params.get("message");
                         emit((String) params.get("key"), msg);
                         response = "{\"status\":\"success\"}";
-                    } else if (method.equals("del_member")) {
+                    } else {
                         response = s.execute(method, params.toJSONString());
                         
-                        String uid = Integer.toString(s.getIDByUserid((String) params.get("userid")));
-                        String gid = (String) params.get("group");
-                        String gname = s.getNameByGroupid(gid);
-                        JSONObject obj = new JSONObject();
-                        obj.put("method", "kick");
-                        obj.put("gid", "g_" + gname + "_"+ gid);
-                        emit((String) params.get("userid"), obj.toJSONString());
-                        
-                    } else {
-                        response = s.execute(method, params.toJSONString());       
+                        if (method.equals("del_member")) {
+                            String uid = Integer.toString(s.getIDByUserid((String) params.get("userid")));
+                            String gid = (String) params.get("group");
+                            String gname = s.getNameByGroupid(gid);
+                            JSONObject obj = new JSONObject();
+                            obj.put("method", "kick");
+                            obj.put("gid", "g_" + gname + "_" + gid);
+                            emit((String) params.get("userid"), obj.toJSONString());
+                        } else if (method.equals("add_friend")) {
+                            System.out.println(params);
+                            JSONObject obj = new JSONObject();
+                            obj.put("method", "notify");
+                            obj.put("adder", (String) params.get("userid"));
+                            emit((String) params.get("friendid"), obj.toJSONString());
+                        }
                     }             
                 } catch (Exception e){
                     System.out.println("[.] Exception: " + e.toString());

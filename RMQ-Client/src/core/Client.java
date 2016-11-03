@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import ui.Alert;
 import ui.Chat;
 
 /**
@@ -42,7 +44,7 @@ public class Client {
     private String CLIENT_MSG_QUEUE;
     
     /* Server Queue */
-    private static final String SERVER_HOST = "192.168.43.130";
+    private static final String SERVER_HOST = "hmif.itb.ac.id";
     private String SERVER_QUEUE_NAME = "server_queue";
     private static final String SERVER_EXCHANGE_NAME = "server_exchange";
     
@@ -79,8 +81,14 @@ public class Client {
                         JSONObject r = (JSONObject) parser.parse(message);
                         
                         if (r.containsKey("method")) {
-                            System.out.println("GID = " + r.get("gid"));
-                            unbind((String) r.get("gid"));
+                            String method = (String) r.get("method");
+                            if (method.equals("kick")) {
+                                System.out.println("GID = " + r.get("gid"));
+                                unbind((String) r.get("gid"));
+                            } else if (method.equals("notify")) {
+                                Alert a = new Alert("You have been added by " + (String) r.get("adder"));
+                                a.setVisible(true);
+                            }
                         } else {
                             String from = (String) r.get("from");
                             ArrayList<String> m;
